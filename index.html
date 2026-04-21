@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sovereign Ledger | Enterprise ERP</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface": "#f8f9ff", "primary": "#031636", "secondary": "#0058bb", "background": "#f8f9ff", "on-surface": "#0d1c2e", "on-surface-variant": "#44474e", "outline": "#75777f", "outline-variant": "#c5c6cf", "surface-container": "#e6eeff", "surface-container-low": "#eff4ff", "surface-container-high": "#dce9ff", "surface-container-highest": "#d5e3fc", "surface-bright": "#f8f9ff", "primary-container": "#1a2b4c", "on-primary": "#ffffff", "secondary-container": "#1471e6", "error": "#ba1a1a", "error-container": "#ffdad6" }, borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" }, fontFamily: { headline: ["Cairo"], body: ["Inter"], label: ["Inter"] } } } }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d5e3fc;
+            border-radius: 10px
+        }
+
+        .page-section {
+            display: none
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn .3s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 22, 54, .5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center
+        }
+
+        .modal-overlay.active {
+            display: flex
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);
+            animation: slideUp .3s ease
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        .nav-item {
+            transition: all .2s
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #031636, #1a2b4c);
+            color: #fff !important;
+            border-radius: .75rem;
+            box-shadow: 0 4px 12px rgba(3, 22, 54, .3)
+        }
+
+        .nav-item:not(.active):hover {
+            background: #e6eeff;
+            transform: translateX(-4px)
+        }
+
+        .sidebar.collapsed {
+            width: 72px
+        }
+
+        .sidebar.collapsed .nav-text,
+        .sidebar.collapsed .nav-section-title,
+        .sidebar.collapsed .sidebar-brand-text,
+        .sidebar.collapsed .sidebar-footer-text {
+            display: none
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            transition: all .3s
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+            transform: translateY(-2px)
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: #fff;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon-blue {
+            background: linear-gradient(135deg, #031636, #1a2b4c);
+        }
+
+        .stat-icon-amber {
+            background: linear-gradient(135deg, #854d0e, #f59e0b);
+        }
+
+        .stat-icon-green {
+            background: linear-gradient(135deg, #166534, #22c55e);
+        }
+
+        .stat-icon-red {
+            background: linear-gradient(135deg, #991b1b, #ef4444);
+        }
+
+        .stat-icon-white {
+            background: rgba(255, 255, 255, 0.2);
+            color: #031636;
+        }
+
+        .stat-card-accent {
+            background: linear-gradient(135deg, #031636, #1a2b4c);
+            color: #fff;
+        }
+
+        .stat-card-accent .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .stat-card-accent .stat-icon-white {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: #0d1c2e;
+            font-weight: 600;
+            padding: 12px 16px;
+            text-align: right;
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: .875rem
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc
+        }
+
+        .form-input {
+            width: 100%;
+            padding: .625rem .875rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: .75rem;
+            font-family: Cairo;
+            font-size: .875rem;
+            transition: all .2s;
+            background: #fff
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0058bb;
+            box-shadow: 0 0 0 3px rgba(0, 88, 187, .1)
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #031636, #1a2b4c);
+            color: #fff;
+            border: none;
+            padding: .75rem 1.5rem;
+            border-radius: .75rem;
+            font-family: Cairo;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            font-size: .875rem
+        }
+
+        .btn-primary:hover {
+            opacity: .9;
+            transform: translateY(-1px)
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1.5px solid #e2e8f0;
+            color: #44474e;
+            padding: .5rem 1rem;
+            border-radius: .75rem;
+            cursor: pointer;
+            font-family: Cairo;
+            font-weight: 600;
+            font-size: .8rem;
+            transition: all .2s
+        }
+
+        .btn-ghost:hover,
+        .btn-ghost.active {
+            background: #031636;
+            color: #fff;
+            border-color: #031636
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 700
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .badge-danger {
+            background: #fef2f2;
+            color: #991b1b
+        }
+
+        .badge-warning {
+            background: #fef9c3;
+            color: #854d0e
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-top: 8px;
+            color: #fff;
+            font-family: Cairo;
+            font-size: .875rem;
+            animation: slideIn .3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .15)
+        }
+
+        .toast.success {
+            background: #166534
+        }
+
+        .toast.error {
+            background: #991b1b
+        }
+
+        .toast.warning {
+            background: #854d0e
+        }
+
+        .toast.info {
+            background: #1e40af
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        .clickable-link {
+            cursor: pointer;
+            color: #0058bb;
+            font-weight: 600
+        }
+
+        .clickable-link:hover {
+            text-decoration: underline
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 4px
+        }
+
+        .row-actions button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #44474e;
+            transition: all .2s;
+            font-size: .8rem
+        }
+
+        .row-actions button:hover {
+            background: #031636;
+            color: #fff
+        }
+
+        .row-actions button.delete:hover {
+            background: #991b1b
+        }
+
+        .row-actions button.warning:hover {
+            background: #854d0e
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block
+        }
+
+        .search-input {
+            padding: .5rem 1rem .5rem 2.5rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: .75rem;
+            font-family: Cairo;
+            width: 100%;
+            max-width: 280px;
+            font-size: .85rem;
+            transition: all .2s;
+            background: #fff
+        }
+
+        .search-input:focus {
+            border-color: #0058bb;
+            box-shadow: 0 0 0 3px rgba(0, 88, 187, .1);
+            outline: none
+        }
+
+        body.logged-out .app-shell {
+            filter: blur(4px);
+            pointer-events: none
+        }
+
+        body.logged-out #loginOverlay {
+            display: flex !important
+        }
+
+        .excel-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .75rem;
+            color: #166534
+        }
+
+        .excel-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%
+        }
+
+        .excel-status.disconnected {
+            color: #991b1b
+        }
+
+        .excel-status.disconnected::before {
+            background: #ef4444
+        }
+
+        .currency {
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum"
+        }
+
+        .negative {
+            color: #ef4444 !important;
+            font-weight: 700
+        }
+
+        /* New design styles */
+        .section-label {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .table-card {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            overflow: hidden;
+        }
+
+        .stat-label {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3));
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface antialiased overflow-x-hidden">
+    <div id="loginOverlay"
+        style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#031636 0%,#1a2b4c 100%);z-index:10000;justify-content:center;align-items:center">
+        <div class="modal-card" style="max-width:400px;text-align:center">
+            <div style="margin-bottom:1.5rem"><span class="material-symbols-outlined"
+                    style="font-size:3rem;color:#031636">account_balance</span>
+                <h2 style="font-family:Cairo;font-weight:900;font-size:1.5rem;color:#031636;margin:.5rem 0">Sovereign
+                    Ledger</h2>
+                <p style="color:#64748b;font-size:.875rem">Enterprise ERP System</p>
+            </div>
+            <form id="loginForm" style="text-align:right">
+                <div style="margin-bottom:1rem"><label
+                        style="font-size:.8rem;font-weight:600;color:#44474e;margin-bottom:4px;display:block">اسم
+                        المستخدم</label>
+                    <input id="loginUsername" class="form-input" type="text" required placeholder="أدخل اسم المستخدم">
+                </div>
+                <div style="margin-bottom:1.5rem"><label
+                        style="font-size:.8rem;font-weight:600;color:#44474e;margin-bottom:4px;display:block">كلمة
+                        المرور</label>
+                    <input id="loginPassword" class="form-input" type="password" placeholder="أدخل كلمة المرور">
+                </div>
+                <button type="submit" class="btn-primary login-btn" style="width:100%"><i class="fas fa-sign-in-alt"
+                        style="margin-left:8px"></i>تسجيل الدخول</button>
+            </form>
+        </div>
+    </div>
+    <div class="app-shell">
+        <aside id="sidebar"
+            class="sidebar fixed right-0 top-0 h-screen w-64 z-40 flex flex-col bg-slate-100/80 backdrop-blur-sm"
+            style="border-left:1px solid #e2e8f0">
+            <div class="px-5 pt-5 pb-3">
+                <div class="flex items-center gap-3 mb-1">
+                    <div
+                        class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined" style="font-size:1.25rem">account_balance</span>
+                    </div>
+                    <div class="sidebar-brand-text">
+                        <h2 class="text-base font-bold text-primary font-headline leading-none">Sovereign</h2>
+                        <p class="text-[10px] text-slate-400 font-medium">Enterprise ERP</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 flex flex-col gap-0.5 px-3 overflow-y-auto" style="scrollbar-width:thin">
+                <a class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold"
+                    data-page="dashboard">
+                    <span class="material-symbols-outlined text-lg">dashboard</span><span class="nav-text">لوحة
+                        التحكم</span></a>
+                <div class="mt-3 mb-1 px-3"><span
+                        class="nav-section-title text-[10px] font-bold text-slate-400 uppercase tracking-widest">الفواتير</span>
+                </div>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="sales">
+                    <span class="material-symbols-outlined text-lg">receipt_long</span><span class="nav-text">فواتير
+                        البيع</span><span id="salesBadge"
+                        class="mr-auto bg-secondary text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold"
+                        style="display:none"></span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="purchases">
+                    <span class="material-symbols-outlined text-lg">shopping_cart</span><span class="nav-text">فواتير
+                        الشراء</span></a>
+                <div class="mt-3 mb-1 px-3"><span
+                        class="nav-section-title text-[10px] font-bold text-slate-400 uppercase tracking-widest">المخزون</span>
+                </div>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="inventory">
+                    <span class="material-symbols-outlined text-lg">inventory_2</span><span
+                        class="nav-text">المخزون</span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="products">
+                    <span class="material-symbols-outlined text-lg">category</span><span
+                        class="nav-text">المنتجات</span></a>
+                <div class="mt-3 mb-1 px-3"><span
+                        class="nav-section-title text-[10px] font-bold text-slate-400 uppercase tracking-widest">الأطراف</span>
+                </div>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="customers">
+                    <span class="material-symbols-outlined text-lg">group</span><span
+                        class="nav-text">العملاء</span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="suppliers">
+                    <span class="material-symbols-outlined text-lg">local_shipping</span><span
+                        class="nav-text">الموردين</span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="reps">
+                    <span class="material-symbols-outlined text-lg">person_pin</span><span
+                        class="nav-text">المناديب</span></a>
+                <div class="mt-3 mb-1 px-3"><span
+                        class="nav-section-title text-[10px] font-bold text-slate-400 uppercase tracking-widest">المالية</span>
+                </div>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="treasury">
+                    <span class="material-symbols-outlined text-lg">account_balance_wallet</span><span
+                        class="nav-text">الخزينة</span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="statements">
+                    <span class="material-symbols-outlined text-lg">description</span><span class="nav-text">كشوفات
+                        الحساب</span></a>
+                <div class="mt-3 mb-1 px-3"><span
+                        class="nav-section-title text-[10px] font-bold text-slate-400 uppercase tracking-widest">إدارة</span>
+                </div>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="hr">
+                    <span class="material-symbols-outlined text-lg">badge</span><span class="nav-text">الموارد
+                        البشرية</span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="reports">
+                    <span class="material-symbols-outlined text-lg">analytics</span><span
+                        class="nav-text">التقارير</span></a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold text-slate-600"
+                    data-page="settings">
+                    <span class="material-symbols-outlined text-lg">settings</span><span
+                        class="nav-text">الإعدادات</span></a>
+            </nav>
+            <div class="px-3 pb-4 mt-2 space-y-2">
+                <div id="excelStatus" class="excel-status px-3"><span class="status-text">متصل</span></div>
+                <div class="sidebar-footer-text px-3 py-2 text-xs text-slate-400" id="currentUserDisplay"></div>
+                <a id="logoutBtn"
+                    class="flex items-center gap-3 px-3 py-2 text-error hover:bg-error-container/30 rounded-xl cursor-pointer text-sm font-semibold transition-colors">
+                    <span class="material-symbols-outlined text-lg">logout</span><span class="nav-text">تسجيل
+                        خروج</span></a>
+            </div>
+        </aside>
+        <header class="fixed top-0 left-0 z-30 h-16 flex items-center justify-between px-6 bg-white/80 backdrop-blur-xl"
+            style="right:256px;border-bottom:1px solid #e2e8f0">
+            <div class="flex items-center gap-3">
+                <button id="sidebarToggle" class="p-2 hover:bg-surface-container rounded-lg transition-colors"><span
+                        class="material-symbols-outlined">menu</span></button>
+                <button id="mobileMenuBtn"
+                    class="p-2 hover:bg-surface-container rounded-lg transition-colors md:hidden"><span
+                        class="material-symbols-outlined">menu</span></button>
+                <span class="text-xs font-bold text-slate-300 tracking-widest hidden sm:inline"
+                    style="margin-left:12px">SOVEREIGN LEDGER</span>
+                <h2 id="pageTitle" class="font-headline font-bold text-lg text-primary">لوحة التحكم</h2>
+            </div>
+            <div class="flex items-center gap-2">
+                <input id="excelFileInput" type="file" accept=".xlsx,.xls" style="display:none">
+                <button id="importExcel" class="btn-ghost text-xs"><i class="fas fa-file-import"
+                        style="margin-left:4px"></i><span class="hidden sm:inline">استيراد</span></button>
+                <button id="exportExcel" class="btn-ghost text-xs"><i class="fas fa-file-export"
+                        style="margin-left:4px"></i><span class="hidden sm:inline">تصدير</span></button>
+                <button id="saveData" class="btn-ghost text-xs"><i class="fas fa-save" style="margin-left:4px"></i><span
+                        class="hidden sm:inline">حفظ</span></button>
+            </div>
+        </header>
+        <main class="mr-64 pt-16 min-h-screen">
+            <!-- ===== DASHBOARD ===== -->
+            <section id="page-dashboard" class="page-section active">
+                <div class="p-6 lg:p-8">
+                    <div class="page-hero mb-8">
+                        <p class="section-label">FINANCIAL OVERVIEW</p>
+                        <h1 class="font-headline font-black text-3xl text-primary mb-1">نظرة عامة مالية</h1>
+                        <p class="text-on-surface-variant text-sm">مرحباً بك. هذه هي حالة دفترك المالي</p>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5 mb-8">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-blue"><span
+                                    class="material-symbols-outlined">trending_up</span></div>
+                            <p class="stat-label text-xs text-slate-400 font-semibold mb-1">إجمالي المبيعات</p>
+                            <p id="statTotalSales" class="text-2xl font-black text-primary font-headline currency">0.00
+                            </p>
+                            <p id="statSalesCount" class="text-xs text-slate-400 mt-1"></p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-amber"><span
+                                    class="material-symbols-outlined">shopping_cart</span></div>
+                            <p class="stat-label text-xs text-slate-400 font-semibold mb-1">إجمالي المشتريات</p>
+                            <p id="statTotalPurchases" class="text-2xl font-black text-primary font-headline currency">
+                                0.00</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-green"><span
+                                    class="material-symbols-outlined">account_balance</span></div>
+                            <p class="stat-label text-xs text-slate-400 font-semibold mb-1">صافي الربح</p>
+                            <p id="statProfit" class="text-2xl font-black font-headline currency" style="color:#166534">
+                                0.00</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-red"><span
+                                    class="material-symbols-outlined">credit_card_off</span></div>
+                            <p class="stat-label text-xs text-slate-400 font-semibold mb-1">المديونيات</p>
+                            <p id="statTotalDue" class="text-2xl font-black font-headline currency"
+                                style="color:#ef4444">0.00</p>
+                            <p id="statCustomersCount" class="text-xs text-slate-400 mt-1"></p>
+                        </div>
+                        <div class="stat-card stat-card-accent">
+                            <div class="stat-icon stat-icon-white"><span
+                                    class="material-symbols-outlined">savings</span></div>
+                            <p class="stat-label text-xs font-semibold mb-1" style="color:rgba(255,255,255,.7)">رصيد
+                                الخزينة</p>
+                            <p id="statCashInBox" class="text-2xl font-black font-headline currency" style="color:#fff">
+                                0.00</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-amber"><span
+                                    class="material-symbols-outlined">person_pin</span></div>
+                            <p class="stat-label text-xs text-slate-400 font-semibold mb-1">عهدة المناديب</p>
+                            <p id="statRepCustody" class="text-2xl font-black font-headline currency"
+                                style="color:#854d0e">0.00</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="stat-card">
+                            <h3 class="font-headline font-bold text-sm text-primary mb-4">حركة المبيعات</h3>
+                            <div style="height:220px"><canvas id="salesChart"></canvas></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="font-headline font-bold text-sm text-primary mb-4">أعلى المنتجات مبيعاً</h3>
+                            <div style="height:220px"><canvas id="productsChart"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="stat-card">
+                            <h3 class="font-headline font-bold text-sm text-primary mb-4">أعلى المديونيات</h3>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>العميل</th>
+                                        <th>الإجمالي</th>
+                                        <th>المتبقي</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topDebtorsBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="font-headline font-bold text-sm text-primary mb-4">تنبيهات المخزون</h3>
+                            <div id="lowStockAlerts"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== SALES ===== -->
+            <section id="page-sales" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <p class="section-label">SALES MANAGEMENT</p>
+                            <h2 class="font-headline font-bold text-2xl text-primary">إدارة المبيعات</h2>
+                            <p class="text-slate-400 text-xs mt-1">إدارة ومتابعة جميع فواتير البيع والتحصيلات</p>
+                        </div>
+                        <button class="btn-primary text-sm" onclick="App.openModal('saleModal')"><i class="fas fa-plus"
+                                style="margin-left:6px"></i>فاتورة بيع جديدة</button>
+                    </div>
+                    <div class="table-card overflow-x-auto p-0">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>العميل</th>
+                                    <th>المنتج</th>
+                                    <th>المندوب</th>
+                                    <th>الكمية</th>
+                                    <th>المرتجع</th>
+                                    <th>الصافي</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي</th>
+                                    <th>المحصل</th>
+                                    <th>المتبقي</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== PURCHASES ===== -->
+            <section id="page-purchases" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <p class="section-label">PROCUREMENT</p>
+                            <h2 class="font-headline font-bold text-2xl text-primary">إدارة المشتريات</h2>
+                            <p class="text-slate-400 text-xs mt-1">متابعة فواتير الشراء والمدفوعات للموردين</p>
+                        </div>
+                        <button class="btn-primary text-sm" onclick="App.openModal('purchaseModal')"><i
+                                class="fas fa-plus" style="margin-left:6px"></i>فاتورة شراء جديدة</button>
+                    </div>
+                    <div class="table-card overflow-x-auto p-0">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>المندوب</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي</th>
+                                    <th>المورد</th>
+                                    <th>المستحق</th>
+                                    <th>المدفوع</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchasesBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== INVENTORY ===== -->
+            <section id="page-inventory" class="page-section">
+<div class="p-6 lg:p-8">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <p class="section-label">INVENTORY OVERSIGHT & ASSET MANAGEMENT</p>
+      <h2 class="font-headline font-bold text-3xl text-primary">إدارة المخزون</h2>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-ghost bg-surface-container text-primary font-bold" onclick="App.openModal('warehouseTransferModal')"><i class="fas fa-dolly ml-2"></i>نقل مخزون</button>
+      <button class="btn-primary" onclick="App.openModal('stockAdjModal')"><i class="fas fa-plus ml-2"></i>تسوية مخزون</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+    <div class="stat-card">
+       <div class="flex justify-between items-start mb-4">
+          <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fas fa-box-open text-lg"></i></div>
+          <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded">Daily</span>
+       </div>
+       <p class="text-xs text-slate-500 font-bold mb-1">PENDING SHIPMENTS</p>
+       <p id="invPending" class="text-3xl font-black text-primary font-headline">0</p>
+    </div>
+    <div class="stat-card border border-red-100">
+       <div class="flex justify-between items-start mb-4">
+          <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600"><i class="fas fa-exclamation-triangle text-lg"></i></div>
+          <span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-1 rounded">Action Required</span>
+       </div>
+       <p class="text-xs text-slate-500 font-bold mb-1">LOW STOCK ITEMS</p>
+       <p id="invLowStock" class="text-3xl font-black text-red-600 font-headline">0</p>
+    </div>
+    <div class="stat-card">
+       <div class="flex justify-between items-start mb-4">
+          <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fas fa-dollar-sign text-lg"></i></div>
+          <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-1 rounded">YTD</span>
+       </div>
+       <p class="text-xs text-slate-500 font-bold mb-1">INVENTORY VALUE</p>
+       <p id="invValue" class="text-3xl font-black text-primary font-headline">0.00</p>
+    </div>
+    <div class="stat-card">
+       <div class="flex justify-between items-start mb-4">
+          <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"><i class="fas fa-tags text-lg"></i></div>
+       </div>
+       <p class="text-xs text-slate-500 font-bold mb-1">TOTAL SKU'S</p>
+       <p id="invSkus" class="text-3xl font-black text-primary font-headline">0</p>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <h3 class="font-headline font-bold text-lg text-primary ml-4">Product Ledger</h3>
+      <div class="flex gap-2">
+         <span class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-full cursor-pointer shadow-sm">All Categories</span>
+         <span class="bg-surface-container text-slate-500 text-xs font-bold px-4 py-2 rounded-full cursor-pointer hover:bg-slate-200 transition-colors">Apparel</span>
+         <span class="bg-surface-container text-slate-500 text-xs font-bold px-4 py-2 rounded-full cursor-pointer hover:bg-slate-200 transition-colors">Electronics</span>
+      </div>
+    </div>
+    <div class="relative">
+      <input type="text" placeholder="Search inventory..." class="search-input pl-10 text-xs py-2 w-64">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"></i>
+    </div>
+  </div>
+
+  <div class="table-card overflow-x-auto p-0 mb-8">
+    <table class="data-table" style="min-width: 800px;">
+      <thead>
+        <tr>
+          <th>PRODUCT DETAILS</th>
+          <th>CATEGORY</th>
+          <th>STOCK LEVEL</th>
+          <th>UNIT PRICE</th>
+          <th>STATUS</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryBody"></tbody>
+    </table>
+  </div>
+  
+  <div class="stat-card p-0 overflow-hidden">
+     <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+        <h3 class="font-headline font-bold text-lg text-primary">حركة المخزون (Ledger)</h3>
+        <button class="btn-ghost text-xs" onclick="App.exportAdvancedReports('inventoryMovement')">تصدير التقرير <i class="fas fa-download mr-1"></i></button>
+     </div>
+     <div class="overflow-x-auto">
+        <table class="data-table w-full">
+           <thead><tr><th>التاريخ</th><th>المنتج</th><th>النوع</th><th>الكمية</th><th>الموقع</th><th>الطرف</th></tr></thead>
+           <tbody id="inventoryLedgerBody"></tbody>
+        </table>
+     </div>
+  </div>
+
+</div>
+</section>
+
+            <!-- ===== CUSTOMERS ===== -->
+            <section id="page-customers" class="page-section">
+<div class="p-6 lg:p-8">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <p class="section-label">CLIENTS & RECEIVABLES</p>
+      <h2 class="font-headline font-bold text-3xl text-primary">إدارة العملاء</h2>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-ghost bg-surface-container text-primary font-bold" onclick="App.exportAdvancedReports('customer')"><i class="fas fa-download ml-2"></i>تصدير</button>
+      <button class="btn-primary" onclick="App.openModal('customerModal')"><i class="fas fa-plus ml-2"></i>إضافة عميل جديد</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="stat-card">
+       <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-secondary"><i class="fas fa-users text-xl"></i></div>
+          <div><p class="text-xs text-slate-500 font-bold mb-1">TOTAL CLIENTS</p><p id="custTotal" class="text-2xl font-black text-primary font-headline">0</p></div>
+       </div>
+    </div>
+    <div class="stat-card">
+       <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fas fa-hand-holding-dollar text-xl"></i></div>
+          <div><p class="text-xs text-slate-500 font-bold mb-1">TOTAL RECEIVABLES</p><p id="custDue" class="text-2xl font-black text-primary font-headline currency">0.00</p></div>
+       </div>
+    </div>
+    <div class="stat-card">
+       <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600"><i class="fas fa-exclamation-circle text-xl"></i></div>
+          <div><p class="text-xs text-slate-500 font-bold mb-1">OVERDUE CLIENTS</p><p id="custOverdue" class="text-2xl font-black text-red-600 font-headline">0</p></div>
+       </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <h3 class="font-headline font-bold text-lg text-primary ml-4">سجل العملاء</h3>
+      <div class="flex gap-2">
+         <span class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-full cursor-pointer shadow-sm">الكل</span>
+         <span class="bg-surface-container text-slate-500 text-xs font-bold px-4 py-2 rounded-full cursor-pointer hover:bg-slate-200 transition-colors">نشط</span>
+         <span class="bg-surface-container text-slate-500 text-xs font-bold px-4 py-2 rounded-full cursor-pointer hover:bg-slate-200 transition-colors">متأخر</span>
+      </div>
+    </div>
+    <div class="relative">
+      <input type="text" placeholder="البحث عن عميل..." class="search-input pl-10 text-xs py-2 w-64">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"></i>
+    </div>
+  </div>
+
+  <div class="table-card overflow-x-auto p-0">
+    <table class="data-table w-full" style="min-width: 800px;">
+      <thead>
+        <tr>
+          <th>العميل</th>
+          <th>رقم التواصل</th>
+          <th>إجمالي التعاملات</th>
+          <th>المدفوع</th>
+          <th>المتبقي (عليه)</th>
+          <th>الحالة</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="customersBody"></tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+            <!-- ===== SUPPLIERS ===== -->
+            <section id="page-suppliers" class="page-section">
+<div class="p-6 lg:p-8">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <p class="section-label">SUPPLIERS & PAYABLES</p>
+      <h2 class="font-headline font-bold text-3xl text-primary">إدارة الموردين</h2>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-ghost bg-surface-container text-primary font-bold" onclick="App.exportAdvancedReports('debts')"><i class="fas fa-download ml-2"></i>تصدير</button>
+      <button class="btn-primary" onclick="App.openModal('supplierModal')"><i class="fas fa-plus ml-2"></i>إضافة مورد جديد</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="stat-card">
+       <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-secondary"><i class="fas fa-truck text-xl"></i></div>
+          <div><p class="text-xs text-slate-500 font-bold mb-1">TOTAL SUPPLIERS</p><p id="suppTotal" class="text-2xl font-black text-primary font-headline">0</p></div>
+       </div>
+    </div>
+    <div class="stat-card">
+       <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fas fa-file-invoice-dollar text-xl"></i></div>
+          <div><p class="text-xs text-slate-500 font-bold mb-1">TOTAL PAYABLES</p><p id="suppDue" class="text-2xl font-black text-primary font-headline currency">0.00</p></div>
+       </div>
+    </div>
+    <div class="stat-card">
+       <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600"><i class="fas fa-exclamation-triangle text-xl"></i></div>
+          <div><p class="text-xs text-slate-500 font-bold mb-1">OVERDUE PAYMENTS</p><p id="suppOverdue" class="text-2xl font-black text-red-600 font-headline">0</p></div>
+       </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <h3 class="font-headline font-bold text-lg text-primary ml-4">سجل الموردين</h3>
+      <div class="flex gap-2">
+         <span class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-full cursor-pointer shadow-sm">الكل</span>
+         <span class="bg-surface-container text-slate-500 text-xs font-bold px-4 py-2 rounded-full cursor-pointer hover:bg-slate-200 transition-colors">نشط</span>
+      </div>
+    </div>
+    <div class="relative">
+      <input type="text" placeholder="البحث عن مورد..." class="search-input pl-10 text-xs py-2 w-64">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"></i>
+    </div>
+  </div>
+
+  <div class="table-card overflow-x-auto p-0">
+    <table class="data-table w-full" style="min-width: 800px;">
+      <thead>
+        <tr>
+          <th>المورد</th>
+          <th>رقم التواصل</th>
+          <th>إجمالي التعاملات</th>
+          <th>المدفوع</th>
+          <th>المتبقي (له)</th>
+          <th>الحالة</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="suppliersBody"></tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+            <!-- ===== REPS ===== -->
+            <section id="page-reps" class="page-section">
+<div class="p-6 lg:p-8">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <p class="section-label">ACCOUNTING / RESOURCE MANAGEMENT</p>
+      <h2 class="font-headline font-bold text-3xl text-primary">إدارة المندوبين</h2>
+    </div>
+    <div class="flex gap-3">
+      <button class="btn-ghost bg-surface-container text-primary font-bold" onclick="App.exportAdvancedReports('repPerformance')"><i class="fas fa-download ml-2"></i>تصدير التقرير</button>
+      <button class="btn-primary" onclick="App.openModal('staffModal')"><i class="fas fa-user-plus ml-2"></i>إضافة مندوب جديد</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="stat-card stat-card-accent flex flex-col justify-between" style="padding: 2rem;">
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <p class="text-xs font-semibold mb-1" style="color:rgba(255,255,255,.7)">ACTIVE COLLECTIONS</p>
+          <div class="flex items-baseline gap-2">
+            <p id="repTopCollections" class="text-4xl font-black font-headline currency" style="color:#fff">0.00</p>
+            <span class="text-sm font-bold" style="color:rgba(255,255,255,.7)">ر.س</span>
+          </div>
+        </div>
+        <div class="stat-icon stat-icon-white"><span class="material-symbols-outlined">payments</span></div>
+      </div>
+      <div class="mt-auto">
+        <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded bg-white/10 text-white"><i class="fas fa-arrow-trend-up"></i> 12% زيادة عن الشهر الماضي</span>
+      </div>
+    </div>
+
+    <div class="stat-card flex flex-col justify-between" style="padding: 2rem;">
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <p class="text-xs text-slate-400 font-semibold mb-1 uppercase">AGGREGATE SALES</p>
+          <p id="repTopSales" class="text-4xl font-black text-primary font-headline currency">0.00</p>
+        </div>
+        <div class="stat-icon stat-icon-blue"><span class="material-symbols-outlined">bar_chart</span></div>
+      </div>
+      <div class="mt-auto">
+        <div class="flex justify-between text-xs font-bold text-slate-500 mb-2">
+          <span>75% مكتمل</span>
+          <span>هدف الربع السنوي</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2">
+          <div class="bg-secondary h-2 rounded-full" style="width: 75%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center gap-3">
+      <h3 class="font-headline font-bold text-lg text-primary">سجل المندوبين النشطين</h3>
+      <span id="repCountBadge" class="bg-surface-container text-primary text-xs font-bold px-2.5 py-1 rounded-full">0 مندوب</span>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-ghost px-3 py-1.5 rounded-lg"><i class="fas fa-filter text-slate-400"></i></button>
+      <button class="btn-ghost px-3 py-1.5 rounded-lg"><i class="fas fa-sort-amount-down text-slate-400"></i></button>
+    </div>
+  </div>
+
+  <div class="table-card overflow-x-auto p-0 mb-8">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>المندوب والتفاصيل</th>
+          <th>المنطقة</th>
+          <th>المبيعات الحالية</th>
+          <th>التحصيلات</th>
+          <th>الحالة</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="repsBody"></tbody>
+    </table>
+  </div>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 stat-card page-hero-dark" style="background: linear-gradient(135deg, #031636 0%, #1a2b4c 100%); padding: 3rem;">
+       <p class="section-label text-white/50 mb-4">PERFORMANCE PEAK</p>
+       <h3 class="font-headline font-black text-3xl text-white mb-8 leading-tight">أداء التحصيلات سجل رقماً<br>قياسياً هذا الأسبوع.</h3>
+       <button class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3 rounded-xl font-bold text-sm transition-colors">تحليل البيانات العميقة</button>
+    </div>
+    <div class="stat-card bg-surface-container border-none flex flex-col items-center justify-center">
+       <h4 class="font-headline font-bold text-lg text-primary mb-6">توزيع المناطق</h4>
+       <div class="w-32 h-32 border-8 border-secondary rounded flex items-center justify-center mb-6 relative">
+          <div class="absolute top-0 right-0 w-4 h-full bg-primary/20"></div>
+          <div class="text-center">
+             <span class="text-2xl font-black text-primary font-headline">100%</span>
+             <p class="text-[10px] text-slate-500 font-bold uppercase">تغطية</p>
+          </div>
+       </div>
+       <div class="w-full space-y-2">
+         <div class="flex justify-between text-xs font-bold"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span> المنطقة الوسطى</span> <span>45%</span></div>
+         <div class="flex justify-between text-xs font-bold"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary"></span> المنطقة الغربية</span> <span>30%</span></div>
+       </div>
+    </div>
+  </div>
+</div>
+</section>
+
+            <!-- ===== PRODUCTS ===== -->
+            <section id="page-products" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <p class="section-label">PRODUCT CATALOG</p>
+                            <h2 class="font-headline font-bold text-2xl text-primary">إدارة المنتجات</h2>
+                            <p class="text-slate-400 text-xs mt-1">كتالوج المنتجات والأسعار والأقسام</p>
+                        </div>
+                        <button class="btn-primary text-sm" onclick="App.openModal('productModal')"><i
+                                class="fas fa-plus" style="margin-left:6px"></i>منتج جديد</button>
+                    </div>
+                    <div class="table-card overflow-x-auto p-0">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>سعر البيع</th>
+                                    <th>سعر الشراء</th>
+                                    <th>الوحدة</th>
+                                    <th>القسم</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== TREASURY ===== -->
+            <section id="page-treasury" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <p class="section-label">TREASURY & BANKING</p>
+                            <h2 class="font-headline font-bold text-2xl text-primary">الخزينة العامة</h2>
+                            <p class="text-slate-400 text-xs mt-1">حركة الأموال والسندات المالية</p>
+                        </div>
+                        <div class="flex gap-2"><button class="btn-primary text-sm"
+                                onclick="App.openModal('treasuryActionModal')"><i class="fas fa-plus"
+                                    style="margin-left:6px"></i>حركة خزينة</button>
+                            <button class="btn-primary text-sm" onclick="App.openModal('voucherModal')"><i
+                                    class="fas fa-file-lines" style="margin-left:6px"></i>سند جديد</button>
+                        </div>
+                    </div>
+                    <div id="treasuryStats" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6"></div>
+                    <div class="flex gap-2 mb-4">
+                        <button class="btn-ghost active" onclick="App.switchTreasuryTab('ledger',this)">سجل
+                            الخزينة</button>
+                        <button class="btn-ghost" onclick="App.switchTreasuryTab('vouchers',this)">سندات القبض
+                            والصرف</button>
+                    </div>
+                    <div id="treasury-ledger-view">
+                        <div class="table-card overflow-x-auto p-0">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>التاريخ</th>
+                                        <th>التصنيف</th>
+                                        <th>المرجع</th>
+                                        <th>النوع</th>
+                                        <th>المبلغ</th>
+                                        <th>ملاحظات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledgerBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="treasury-vouchers-view" style="display:none">
+                        <div class="table-card overflow-x-auto p-0">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>رقم السند</th>
+                                        <th>التاريخ</th>
+                                        <th>النوع</th>
+                                        <th>الطرف</th>
+                                        <th>المبلغ</th>
+                                        <th>المستخدم</th>
+                                        <th>طباعة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vouchersBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== STATEMENTS ===== -->
+            <section id="page-statements" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <h2 class="font-headline font-bold text-xl text-primary mb-6">كشوفات الحساب</h2>
+                    <div class="stat-card mb-6">
+                        <div class="flex flex-wrap gap-4 mb-4">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio"
+                                    name="statementType" value="customer" checked
+                                    onchange="App.populateStatementDropdown()"><span
+                                    class="text-sm font-semibold">عميل</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio"
+                                    name="statementType" value="supplier"
+                                    onchange="App.populateStatementDropdown()"><span
+                                    class="text-sm font-semibold">مورد</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio"
+                                    name="statementType" value="rep" onchange="App.populateStatementDropdown()"><span
+                                    class="text-sm font-semibold">مندوب</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio"
+                                    name="statementType" value="staff" onchange="App.populateStatementDropdown()"><span
+                                    class="text-sm font-semibold">موظف</span></label>
+                        </div>
+                        <div class="flex gap-3 items-end"><select id="statementEntity" class="form-input"
+                                style="max-width:300px">
+                                <option value="">اختر...</option>
+                            </select>
+                            <button class="btn-primary text-sm" onclick="App.generateStatement()">عرض الكشف</button>
+                        </div>
+                    </div>
+                    <div id="statementResult"></div>
+                </div>
+            </section>
+
+            <!-- ===== HR ===== -->
+            <section id="page-hr" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <p class="section-label">HUMAN RESOURCES</p>
+                            <h2 class="font-headline font-bold text-2xl text-primary">الموارد البشرية</h2>
+                            <p class="text-slate-400 text-xs mt-1">إدارة الموظفين والرواتب والإجراءات المالية</p>
+                        </div>
+                        <div class="flex gap-2"><button class="btn-primary text-sm"
+                                onclick="App.openModal('staffModal')"><i class="fas fa-user-plus"
+                                    style="margin-left:6px"></i>موظف جديد</button>
+                            <button class="btn-primary text-sm" onclick="App.openModal('hrActionModal')"><i
+                                    class="fas fa-coins" style="margin-left:6px"></i>إجراء مالي</button>
+                        </div>
+                    </div>
+                    <div class="table-card overflow-x-auto p-0 mb-6">
+                        <h3 class="font-headline font-bold text-sm text-primary mb-4">الموظفين</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>المستخدم</th>
+                                    <th>الدور</th>
+                                    <th>الهاتف</th>
+                                    <th>الحالة</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-card overflow-x-auto p-0">
+                        <h3 class="font-headline font-bold text-sm text-primary mb-4">السجل المالي</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>الموظف</th>
+                                    <th>النوع</th>
+                                    <th>المبلغ</th>
+                                    <th>ملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hrBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== REPORTS ===== -->
+            <section id="page-reports" class="page-section">
+<div class="p-6 lg:p-8 bg-surface">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <p class="section-label">FINANCIAL INTELLIGENCE</p>
+      <h2 class="font-headline font-bold text-3xl text-primary">Reports & Analytics</h2>
+    </div>
+    <div class="flex gap-3 items-center">
+      <div class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-600 flex items-center gap-2"><i class="far fa-calendar-alt"></i> Q3 2026 <i class="fas fa-chevron-down text-xs ml-2"></i></div>
+      <button class="btn-primary" onclick="App.exportAdvancedReports('full')"><i class="fas fa-download ml-2"></i>Export All</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+    <div class="stat-card relative overflow-hidden">
+       <div class="absolute top-4 left-4 bg-blue-50 text-secondary text-xs font-bold px-2 py-1 rounded flex items-center gap-1"><i class="fas fa-arrow-up"></i> 12.5%</div>
+       <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary mb-4"><i class="fas fa-chart-line text-lg"></i></div>
+       <p class="text-xs text-slate-500 font-bold mb-1">Net Profit</p>
+       <p id="repNetProfit" class="text-2xl font-black text-primary font-headline">0.00</p>
+    </div>
+    <div class="stat-card relative overflow-hidden">
+       <div class="absolute top-4 left-4 bg-blue-50 text-secondary text-xs font-bold px-2 py-1 rounded flex items-center gap-1"><i class="fas fa-arrow-up"></i> 8.2%</div>
+       <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-secondary mb-4"><i class="fas fa-money-bill-wave text-lg"></i></div>
+       <p class="text-xs text-slate-500 font-bold mb-1">Total Revenue</p>
+       <p id="repTotalRev" class="text-2xl font-black text-primary font-headline">0.00</p>
+    </div>
+    <div class="stat-card relative overflow-hidden">
+       <div class="absolute top-4 left-4 bg-red-50 text-red-600 text-xs font-bold px-2 py-1 rounded flex items-center gap-1"><i class="fas fa-arrow-up"></i> 3.1%</div>
+       <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600 mb-4"><i class="fas fa-credit-card text-lg"></i></div>
+       <p class="text-xs text-slate-500 font-bold mb-1">Operating Expenses</p>
+       <p id="repOpExp" class="text-2xl font-black text-primary font-headline">0.00</p>
+    </div>
+    <div class="stat-card relative overflow-hidden">
+       <div class="absolute top-4 left-4 bg-slate-100 text-slate-500 text-xs font-bold px-2 py-1 rounded flex items-center gap-1"><i class="fas fa-minus"></i> 0.0%</div>
+       <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 mb-4"><i class="fas fa-file-invoice-dollar text-lg"></i></div>
+       <p class="text-xs text-slate-500 font-bold mb-1">Est. Tax Liability (ZATCA)</p>
+       <p id="repTaxLiab" class="text-2xl font-black text-primary font-headline">0.00</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+     <div class="lg:col-span-1 space-y-4">
+        <div class="flex justify-between items-center mb-4"><h3 class="font-headline font-bold text-lg text-primary">Financial Statements</h3><a href="#" class="text-xs font-bold text-secondary">View All</a></div>
+        
+        <div class="stat-card flex flex-col" style="padding: 1.5rem;">
+           <div class="flex items-start gap-4 mb-4">
+             <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-primary shrink-0"><i class="fas fa-file-alt"></i></div>
+             <div><h4 class="font-bold text-sm text-primary mb-1">Balance Sheet</h4><p class="text-xs text-slate-500 leading-relaxed">Snapshot of assets, liabilities, and equity.</p></div>
+           </div>
+           <div class="flex gap-2 mt-auto">
+             <button class="bg-surface-container text-secondary px-3 py-2 rounded-lg text-xs font-bold flex-1" onclick="App.exportAdvancedReports('full')">Generate PDF</button>
+             <button class="bg-surface-container text-secondary px-3 py-2 rounded-lg text-xs font-bold flex-1" onclick="App.exportAdvancedReports('full')">Export Excel</button>
+           </div>
+        </div>
+        
+        <div class="stat-card flex flex-col" style="padding: 1.5rem;">
+           <div class="flex items-start gap-4 mb-4">
+             <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-primary shrink-0"><i class="fas fa-chart-bar"></i></div>
+             <div><h4 class="font-bold text-sm text-primary mb-1">Profit & Loss (P&L)</h4><p class="text-xs text-slate-500 leading-relaxed">Income and expenses over a specific period.</p></div>
+           </div>
+           <div class="flex gap-2 mt-auto">
+             <button class="bg-surface-container text-secondary px-3 py-2 rounded-lg text-xs font-bold flex-1" onclick="App.exportAdvancedReports('profitLoss')">Generate PDF</button>
+             <button class="bg-surface-container text-secondary px-3 py-2 rounded-lg text-xs font-bold flex-1" onclick="App.exportAdvancedReports('profitLoss')">Export Excel</button>
+           </div>
+        </div>
+
+        <div class="stat-card flex flex-col" style="padding: 1.5rem;">
+           <div class="flex items-start gap-4 mb-4">
+             <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-primary shrink-0"><i class="fas fa-random"></i></div>
+             <div><h4 class="font-bold text-sm text-primary mb-1">Cash Flow Statement</h4><p class="text-xs text-slate-500 leading-relaxed">Operating, investing, and financing activities.</p></div>
+           </div>
+           <div class="flex gap-2 mt-auto">
+             <button class="bg-surface-container text-secondary px-3 py-2 rounded-lg text-xs font-bold w-1/2">Generate PDF</button>
+           </div>
+        </div>
+     </div>
+
+     <div class="lg:col-span-2 stat-card h-full flex flex-col">
+       <div class="flex justify-between items-start mb-8">
+         <div>
+           <h3 class="font-headline font-bold text-lg text-primary mb-1">Revenue vs. Expenses Trend</h3>
+           <p class="text-xs text-slate-500">YTD 2026 Monthly Comparison</p>
+         </div>
+         <div class="flex items-center gap-4 text-xs font-bold text-slate-600">
+           <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-primary"></span> Revenue</span>
+           <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-400"></span> Expenses</span>
+         </div>
+       </div>
+       <div class="flex-1 w-full relative min-h-[300px] flex items-end justify-between px-4" style="background-image: linear-gradient(to top, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 100% 25%;">
+         <!-- Fake chart bars for UI visual matching -->
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[40%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[30%]"></div></div>
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[45%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[32%]"></div></div>
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[55%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[35%]"></div></div>
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[50%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[40%]"></div></div>
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[65%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[45%]"></div></div>
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[70%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[42%]"></div></div>
+         <div class="w-1/12 flex items-end gap-1 h-full pt-8"><div class="w-1/2 bg-primary rounded-t-sm h-[85%]"></div><div class="w-1/2 bg-slate-500 rounded-t-sm h-[50%]"></div></div>
+       </div>
+       <div class="flex justify-between w-full mt-4 text-[10px] font-bold text-slate-400 px-4">
+         <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span><span>JUL</span>
+       </div>
+     </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="stat-card">
+       <div class="flex justify-between items-center mb-6">
+         <div class="flex items-center gap-3">
+           <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fas fa-shield-alt"></i></div>
+           <div><h4 class="font-bold text-sm text-primary mb-1">ZATCA Compliance</h4><p class="text-xs text-slate-500">E-Invoicing Phase II Reports</p></div>
+         </div>
+         <span class="bg-surface-container text-primary text-[10px] font-bold px-2 py-1 rounded">KSA Mandatory</span>
+       </div>
+       <div class="space-y-1">
+         <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors" onclick="App.exportAdvancedReports('taxReport')"><div class="flex items-center gap-3"><i class="fas fa-file-invoice text-slate-400"></i><span class="text-sm font-bold text-primary">VAT Return Summary</span></div><i class="fas fa-arrow-right text-slate-300"></i></div>
+         <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors" onclick="App.exportAdvancedReports('taxReport')"><div class="flex items-center gap-3"><i class="fas fa-check-double text-slate-400"></i><span class="text-sm font-bold text-primary">B2B E-Invoice Audit Log</span></div><i class="fas fa-arrow-right text-slate-300"></i></div>
+         <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors" onclick="App.exportAdvancedReports('taxReport')"><div class="flex items-center gap-3"><i class="fas fa-receipt text-slate-400"></i><span class="text-sm font-bold text-primary">B2C Simplified Invoices</span></div><i class="fas fa-arrow-right text-slate-300"></i></div>
+       </div>
+    </div>
+    
+    <div class="stat-card bg-slate-50 border-none">
+       <div class="flex items-center gap-3 mb-6">
+         <div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-primary"><i class="fas fa-table"></i></div>
+         <div><h4 class="font-bold text-sm text-primary mb-1">Operational Reports</h4><p class="text-xs text-slate-500">Sales & Inventory Data</p></div>
+       </div>
+       <div class="grid grid-cols-2 gap-4">
+         <div class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-primary/20 transition-colors" onclick="App.exportAdvancedReports('salesReport')">
+           <i class="fas fa-shopping-cart text-secondary mb-3"></i>
+           <h5 class="font-bold text-xs text-primary mb-1">Sales by Item</h5>
+           <p class="text-[10px] text-slate-500">Top performing SKUs</p>
+         </div>
+         <div class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-primary/20 transition-colors" onclick="App.exportAdvancedReports('customer')">
+           <i class="fas fa-user-friends text-secondary mb-3"></i>
+           <h5 class="font-bold text-xs text-primary mb-1">Sales by Customer</h5>
+           <p class="text-[10px] text-slate-500">Client revenue analysis</p>
+         </div>
+         <div class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-primary/20 transition-colors" onclick="App.exportAdvancedReports('inventoryMovement')">
+           <i class="fas fa-clipboard-list text-primary mb-3"></i>
+           <h5 class="font-bold text-xs text-primary mb-1">Stock Valuation</h5>
+           <p class="text-[10px] text-slate-500">Current inventory worth</p>
+         </div>
+         <div class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-primary/20 transition-colors" onclick="App.exportAdvancedReports('inventoryMovement')">
+           <i class="fas fa-exclamation-triangle text-primary mb-3"></i>
+           <h5 class="font-bold text-xs text-primary mb-1">Low Stock Alerts</h5>
+           <p class="text-[10px] text-slate-500">Items needing reorder</p>
+         </div>
+       </div>
+    </div>
+  </div>
+</div>
+</section>
+
+            <!-- ===== SETTINGS ===== -->
+            <section id="page-settings" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <h2 class="font-headline font-bold text-xl text-primary mb-6">الإعدادات</h2>
+                    <div class="stat-card">
+                        <p class="text-slate-500">إعدادات النظام ستظهر هنا (ZATCA, إعدادات الطباعة, إلخ)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== ENTITY PROFILE ===== -->
+            <section id="page-entity-profile" class="page-section">
+                <div class="p-6 lg:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="profileTitle" class="font-headline font-bold text-xl text-primary"></h2>
+                        <div id="profileActions" class="flex gap-2"></div>
+                    </div>
+                    <div id="profileSummary" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+                    <div id="profileExtraInfo" class="stat-card mb-6" style="display:none"></div>
+                    <div id="profileTableWrapper" class="table-card overflow-x-auto p-0"></div>
+                </div>
+            </section>
+
+
+            <div class="modal-overlay" id="saleModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">فاتورة بيع جديدة</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('saleModal')">&times;</button>
+                    </div>
+                    <form id="saleForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="saleDate" class="form-input" type="date"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">العميل</label><select
+                                    id="saleCustomer" data-type="customers" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المنتج</label><select
+                                    id="saleProduct" data-type="products" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المندوب</label><select
+                                    id="saleRep" data-type="reps" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الكمية</label><input
+                                    id="saleQty" class="form-input" type="number" step="0.01"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الوحدة</label><input
+                                    id="saleUom" class="form-input" type="text" value="piece"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">السعر</label><input
+                                    id="salePrice" class="form-input" type="number" step="0.01"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المحصل</label><input
+                                    id="saleCollected" class="form-input" type="number" step="0.01"></div>
+                            <div class="col-span-2 flex flex-wrap gap-4"><label
+                                    class="flex items-center gap-2 text-sm"><input type="checkbox"
+                                        id="saleIsReturn">مرتجع؟</label><label
+                                    class="flex items-center gap-2 text-sm"><input type="checkbox" id="saleStockImpact"
+                                        checked>تأثير مخزون</label><label class="flex items-center gap-2 text-sm"><input
+                                        type="checkbox" id="saleVat">ضريبة 15%</label></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
+                                        id="saleNotes" class="form-input" type="text"></div>
+                            </div>
+                            <div class="col-span-2 text-lg font-bold">الإجمالي: <span id="saleTotal">0.00</span></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ الفاتورة</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="purchaseModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">فاتورة شراء جديدة</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('purchaseModal')">&times;</button>
+                    </div>
+                    <form id="purchaseForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="purchDate" class="form-input" type="date"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المورد</label><select
+                                    id="purchSupplier" data-type="suppliers" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المنتج</label><select
+                                    id="purchProduct" data-type="products" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المندوب</label><select
+                                    id="purchRep" data-type="reps" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الكمية</label><input
+                                    id="purchQty" class="form-input" type="number" step="0.01"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الوحدة</label><input
+                                    id="purchUom" class="form-input" type="text" value="piece"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">السعر</label><input
+                                    id="purchPrice" class="form-input" type="number" step="0.01"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المدفوع</label><input
+                                    id="purchPaid" class="form-input" type="number" step="0.01"></div>
+                            <div class="col-span-2 flex flex-wrap gap-4"><label
+                                    class="flex items-center gap-2 text-sm"><input type="checkbox"
+                                        id="purchIsReturn">مرتجع؟</label><label
+                                    class="flex items-center gap-2 text-sm"><input type="checkbox" id="purchStockImpact"
+                                        checked>تأثير مخزون</label><label class="flex items-center gap-2 text-sm"><input
+                                        type="checkbox" id="purchVat">ضريبة 15%</label></div>
+                            <div class="col-span-2 text-lg font-bold">الإجمالي: <span id="purchTotal">0.00</span></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ الفاتورة</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="customerModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">إضافة عميل</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('customerModal')">&times;</button>
+                    </div>
+                    <form id="customerForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">اسم العميل</label><input
+                                        id="custName" class="form-input" type="text" required></div>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">السجل
+                                    التجاري</label><input id="custCR" class="form-input" type="text"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الرقم
+                                    الضريبي</label><input id="custTaxId" class="form-input" type="text"></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ العميل</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="supplierModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">إضافة مورد</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('supplierModal')">&times;</button>
+                    </div>
+                    <form id="supplierForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">اسم المورد</label><input
+                                        id="suppName" class="form-input" type="text" required></div>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الهاتف</label><input
+                                    id="suppPhone" class="form-input" type="text"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">العنوان</label><input
+                                    id="suppAddress" class="form-input" type="text"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">السجل
+                                    التجاري</label><input id="suppCR" class="form-input" type="text"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الرقم
+                                    الضريبي</label><input id="suppTaxId" class="form-input" type="text"></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ المورد</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="productModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">إضافة منتج</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('productModal')">&times;</button>
+                    </div>
+                    <form id="productForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">اسم المنتج</label><input
+                                        id="prodName" class="form-input" type="text" required></div>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">سعر البيع</label><input
+                                    id="prodSellPrice" class="form-input" type="number" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">سعر الشراء</label><input
+                                    id="prodBuyPrice" class="form-input" type="number" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الوحدة</label><input
+                                    id="prodUnit" class="form-input" type="text" value="حبة"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">قطع/كرتونة</label><input
+                                    id="prodPiecesPerCarton" class="form-input" type="number" value="10"></div>
+                            <div class="col-span-2"><label
+                                    class="text-xs font-semibold text-slate-500 mb-1 block">القسم</label><select
+                                    id="prodCategory" class="form-input">
+                                    <option value="عام">عام</option>
+                                </select></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ المنتج</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="editProductModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">تعديل منتج</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('editProductModal')">&times;</button>
+                    </div>
+                    <form id="editProductForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4"><input type="hidden" id="editProdId">
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">الاسم</label><input
+                                        id="editProdName" class="form-input" type="text" required></div>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">سعر البيع</label><input
+                                    id="editProdSellPrice" class="form-input" type="number" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">سعر الشراء</label><input
+                                    id="editProdBuyPrice" class="form-input" type="number" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الوحدة</label><input
+                                    id="editProdUnit" class="form-input" type="text" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">قطع/كرتونة</label><input
+                                    id="editProdPiecesPerCarton" class="form-input" type="number"></div>
+                            <div class="col-span-2"><label
+                                    class="text-xs font-semibold text-slate-500 mb-1 block">القسم</label><select
+                                    id="editProdCategory" class="form-input"></select></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ التعديل</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="staffModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">إضافة موظف</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('staffModal')">&times;</button>
+                    </div>
+                    <form id="staffForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">الاسم</label><input
+                                        id="stfName" class="form-input" type="text" required></div>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الدور</label><select
+                                    id="stfRole" class="form-input">
+                                    <option value="مدير">مدير</option>
+                                    <option value="مندوب">مندوب</option>
+                                    <option value="كاشير">كاشير</option>
+                                </select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الهاتف</label><input
+                                    id="stfPhone" class="form-input" type="text"></div>
+                            <div class="col-span-2">
+                                <div><label class="text-xs font-semibold text-slate-500 mb-1 block">كلمة
+                                        المرور</label><input id="stfPassword" class="form-input" type="password"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ الموظف</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="hrActionModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">إجراء مالي (موظف)</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('hrActionModal')">&times;</button>
+                    </div>
+                    <form id="hrActionForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="hrDate" class="form-input" type="date"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الموظف</label><select
+                                    id="hrStaff" data-type="allStaff" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">النوع</label><select
+                                    id="hrType" class="form-input">
+                                    <option value="راتب">راتب</option>
+                                    <option value="سلفة">سلفة</option>
+                                    <option value="مكافأة">مكافأة</option>
+                                    <option value="خصم">خصم</option>
+                                </select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المبلغ</label><input
+                                    id="hrAmount" class="form-input" type="number" step="0.01" required></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
+                                        id="hrNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="treasuryActionModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">حركة خزينة</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('treasuryActionModal')">&times;</button>
+                    </div>
+                    <form id="treasuryActionForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المبلغ</label><input
+                                    id="trAmount" class="form-input" type="number" step="0.01" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">النوع</label><select
+                                    id="trType" class="form-input">
+                                    <option value="IN">وارد (+)</option>
+                                    <option value="OUT">صادر (-)</option>
+                                </select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="trDate" class="form-input" type="date"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المرجع</label><input
+                                    id="trRef" class="form-input" type="text"></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
+                                        id="trNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="repPaymentModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">توريد نقدية من مندوب</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('repPaymentModal')">&times;</button>
+                    </div>
+                    <form id="repPaymentForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المبلغ</label><input
+                                    id="rpAmount" class="form-input" type="number" step="0.01" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المندوب</label><select
+                                    id="rpRep" data-type="reps" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="rpDate" class="form-input" type="date"></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">طريقة
+                                    الدفع</label><input id="rpType" class="form-input" type="text" value="نقدي"></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
+                                        id="rpNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ وإيداع بالخزينة</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="warehouseTransferModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">نقل مخزون</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('warehouseTransferModal')">&times;</button>
+                    </div>
+                    <form id="warehouseTransferForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المندوب
+                                    (السيارة)</label><select id="whRep" data-type="reps" class="form-input"></select>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المنتج</label><select
+                                    id="whProduct" data-type="products" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الكمية</label><input
+                                    id="whQty" class="form-input" type="number" step="0.01" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الاتجاه</label><select
+                                    id="whDirection" class="form-input">
+                                    <option value="TO_REP">من المستودع إلى السيارة</option>
+                                    <option value="FROM_REP">من السيارة إلى المستودع</option>
+                                </select></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
+                                        id="whNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">تنفيذ</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="stockAdjModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">تسوية مخزون</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('stockAdjModal')">&times;</button>
+                    </div>
+                    <form id="stockAdjForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المنتج</label><select
+                                    id="adjProduct" data-type="products" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">النوع</label><select
+                                    id="adjType" class="form-input">
+                                    <option value="IN">تسوية إضافة (+)</option>
+                                    <option value="OUT">تسوية خصم (-)</option>
+                                </select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الكمية</label><input
+                                    id="adjNewQty" class="form-input" type="number" step="0.01" required></div>
+                            <div>
+                                <div><label class="text-xs font-semibold text-slate-500 mb-1 block">السبب</label><input
+                                        id="adjNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">تنفيذ التسوية</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="customerPaymentModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">تسجيل دفعة عميل</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('customerPaymentModal')">&times;</button>
+                    </div>
+                    <form id="customerPaymentForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المحصل</label><select
+                                    id="cpCollectedBy" data-type="reps-with-company" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">العميل</label><select
+                                    id="cpCustomer" data-type="customers" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المبلغ</label><input
+                                    id="cpAmount" class="form-input" type="number" step="0.01" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="cpDate" class="form-input" type="date"></div>
+                            <div class="col-span-2"><label class="text-xs font-semibold text-slate-500 mb-1 block">مرجع
+                                    الفاتورة</label><input id="cpInvoiceRef" class="form-input" type="text"></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
+                                        id="cpNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ الدفعة</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="voucherModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">سند جديد</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('voucherModal')">&times;</button>
+                    </div>
+                    <form id="voucherForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">النوع</label><select
+                                    id="vActionType" class="form-input">
+                                    <option value="IN">سند قبض (وارد)</option>
+                                    <option value="OUT">سند صرف (صادر)</option>
+                                </select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">نوع الطرف</label><select
+                                    id="vPartyType" class="form-input">
+                                    <option value="general">عام</option>
+                                    <option value="customer">عميل</option>
+                                    <option value="supplier">مورد</option>
+                                    <option value="rep">مندوب</option>
+                                </select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">الطرف</label><select
+                                    id="vPartyName" class="form-input"></select></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">المبلغ</label><input
+                                    id="vAmount" class="form-input" type="number" step="0.01" required></div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">التاريخ</label><input
+                                    id="vDate" class="form-input" type="date"></div>
+                            <div>
+                                <div><label class="text-xs font-semibold text-slate-500 mb-1 block">البيان</label><input
+                                        id="vNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">حفظ السند</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="modal-overlay" id="returnModal">
+                <div class="modal-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">تسجيل مرتجع</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('returnModal')">&times;</button>
+                    </div>
+                    <form id="returnForm">
+                        <div class="grid grid-cols-2 gap-3 mb-4"><input type="hidden" id="returnOriginalId"><input
+                                type="hidden" id="returnType">
+                            <div class="col-span-2">
+                                <p id="returnInfoText" class="text-sm text-slate-500 mb-2"></p>
+                            </div>
+                            <div><label class="text-xs font-semibold text-slate-500 mb-1 block">كمية
+                                    المرتجع</label><input id="returnQty" class="form-input" type="number" step="0.01"
+                                    required></div>
+                            <div><small id="returnMaxHint" style="color:#ef4444"></small></div>
+                            <div class="col-span-2">
+                                <div class="col-span-2"><label
+                                        class="text-xs font-semibold text-slate-500 mb-1 block">السبب</label><input
+                                        id="returnNotes" class="form-input" type="text"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2">تنفيذ المرتجع</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="invoiceDetailModal">
+                <div class="modal-card" style="max-width:750px">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 id="invDetailTitle" class="font-headline font-bold text-lg text-primary">تفاصيل الفاتورة
+                        </h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('invoiceDetailModal')">&times;</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                        <div><strong>التاريخ:</strong> <span id="invDetailDate"></span></div>
+                        <div><strong>الطرف:</strong> <span id="invDetailParty"></span></div>
+                        <div><strong>المندوب:</strong> <span id="invDetailRep"></span></div>
+                        <div><strong>ملاحظات:</strong> <span id="invDetailNotes"></span></div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                                <th>الإجمالي</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invDetailTableBody"></tbody>
+                    </table>
+                    <div class="text-center mt-4">
+                        <div id="qrcode" style="display:inline-block"></div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button id="invDetailPrintBtn" class="btn-primary flex-1 text-sm"><i class="fas fa-print"
+                                style="margin-left:6px"></i>طباعة</button>
+                        <button id="invDetailReturnBtn" class="flex-1 text-sm"
+                            style="background:#ef4444;color:#fff;border:none;padding:.75rem;border-radius:.75rem;font-family:Cairo;font-weight:700;cursor:pointer"><i
+                                class="fas fa-undo" style="margin-left:6px"></i>مرتجع</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="zatcaModal">
+                <div class="modal-card" style="max-width:600px">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">ZATCA</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('zatcaModal')">&times;</button>
+                    </div>
+                    <span id="zatcaStatusBadge" class="badge badge-info mb-3"></span>
+                    <pre id="zatcaXmlView"
+                        style="background:#f1f5f9;padding:12px;border-radius:8px;max-height:250px;overflow-y:auto;direction:ltr;text-align:left;font-size:.8rem"></pre>
+                    <div id="zatcaHashView"
+                        style="display:none;background:#f1f5f9;padding:12px;border-radius:8px;direction:ltr;text-align:left;word-break:break-all">
+                        <strong>SHA256:</strong><br><span id="zatcaHashContent"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="categoryModal">
+                <div class="modal-card" style="max-width:400px">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-headline font-bold text-lg text-primary">إدارة الأقسام</h3>
+                        <button class="text-slate-400 hover:text-slate-600 text-xl"
+                            onclick="App.closeModal('categoryModal')">&times;</button>
+                    </div>
+                    <div class="flex gap-2 mb-4"><input type="text" id="newCategoryInput" class="form-input"
+                            placeholder="اسم القسم الجديد...">
+                        <button class="btn-primary text-sm" onclick="App.addCategory()">إضافة</button>
+                    </div>
+                    <ul id="categoryListUl" style="list-style:none;padding:0;max-height:200px;overflow-y:auto"></ul>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="toastContainer" style="position:fixed;bottom:20px;left:20px;z-index:9999"></div>
+    <div id="loadingOverlay"
+        style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.85);z-index:10000;justify-content:center;align-items:center">
+        <div style="text-align:center"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#031636"></i>
+            <p style="margin-top:12px;font-family:Cairo;color:#031636">جاري التحميل...</p>
+        </div>
+    </div>
+    <script src="assets/js/excel-engine.js"></script>
+    <script src="assets/js/zatca-engine.js"></script>
+    <script src="assets/js/core.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered', reg))
+                    .catch(err => console.log('Service Worker registration failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
