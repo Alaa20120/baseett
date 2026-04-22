@@ -1092,50 +1092,86 @@
             </section>
 
             <!-- ===== SALES ===== -->
+            <!-- ===== SALES (screen 13) ===== -->
             <section id="page-sales" class="page-section">
-                <div class="p-6 lg:p-10">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+                <div class="p-6 lg:p-8">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-7">
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">التدفق التجاري</p>
-                            <h1 class="font-headline font-black text-4xl text-primary tracking-tight">دفتر المبيعات</h1>
-                            <p class="text-slate-400 font-medium mt-1">مراقبة جميع الفواتير الصادرة وحالات التحصيل.</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">دفتر الأستاذ</p>
+                            <h1 class="font-headline font-black text-3xl text-primary tracking-tight">فواتير المبيعات</h1>
                         </div>
-                        <button class="px-6 py-3 rounded-2xl bg-primary text-white text-sm font-bold shadow-premium flex items-center gap-2 hover:scale-[1.02] transition-transform" onclick="App.openModal('saleModal')">
-                            <span class="material-symbols-outlined text-lg">add</span>
+                        <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold transition-colors" style="background:#031636;font-family:'Cairo',sans-serif" onclick="App.openModal('saleModal')">
+                            <span class="material-symbols-outlined text-base">add</span>
                             <span>فاتورة بيع جديدة</span>
                         </button>
                     </div>
 
-                    <!-- Sales Table Section -->
-                    <div class="bg-white rounded-[2rem] shadow-soft overflow-hidden">
-                        <div class="p-6 border-b border-slate-50 flex justify-between items-center">
-                            <h3 class="text-lg font-black text-primary font-headline">Transaction History</h3>
-                            <div class="flex gap-2">
+                    <!-- Stat Cards -->
+                    <div class="grid grid-cols-4 gap-4 mb-7">
+                        <div class="stat-card stat-card-accent">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="stat-icon stat-icon-white"><i class="fas fa-file-invoice-dollar"></i></div>
+                                <span class="stat-label text-white/70">إجمالي المبيعات</span>
+                            </div>
+                            <div id="saleTotalStat" class="text-2xl font-black font-body text-white">0.00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div>
+                                <span class="stat-label">إجمالي المحصّل</span>
+                            </div>
+                            <div id="saleCollectedStat" class="text-2xl font-black font-body text-primary">0.00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="stat-icon stat-icon-red"><i class="fas fa-clock"></i></div>
+                                <span class="stat-label">المتبقي للتحصيل</span>
+                            </div>
+                            <div id="saleRemainStat" class="text-2xl font-black font-body text-red-600">0.00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="stat-icon stat-icon-amber"><i class="fas fa-receipt"></i></div>
+                                <span class="stat-label">عدد الفواتير</span>
+                            </div>
+                            <div id="saleCountStat" class="text-2xl font-black font-body text-primary">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Filters + Table -->
+                    <div class="bg-white rounded-2xl shadow-soft overflow-hidden">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-50">
+                            <h3 class="font-headline font-bold text-primary">سجل الفواتير</h3>
+                            <div class="flex items-center gap-2">
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 text-base">search</span>
+                                    <input type="text" placeholder="بحث في الفواتير..." class="bg-slate-50 border-none rounded-xl pr-9 pl-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/10" style="font-family:'Cairo',sans-serif;width:220px">
+                                </div>
                                 <button class="p-2 rounded-xl bg-slate-50 text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">filter_list</span>
-                                </button>
-                                <button class="p-2 rounded-xl bg-slate-50 text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">download</span>
+                                    <span class="material-symbols-outlined text-base">download</span>
                                 </button>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="data-table w-full text-right" dir="rtl">
                                 <thead>
-                                    <tr class="bg-slate-50/50">
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">التاريخ</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">العميل</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">المنتج</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">المندوب</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الكمية</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الصافي</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الإجمالي</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">المحصل</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">المتبقي</th>
-                                        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">إجراءات</th>
+                                    <tr>
+                                        <th>التاريخ</th>
+                                        <th>العميل</th>
+                                        <th>المنتج</th>
+                                        <th>المندوب</th>
+                                        <th>الكمية</th>
+                                        <th>المرتجع</th>
+                                        <th>الصافي</th>
+                                        <th>سعر الوحدة</th>
+                                        <th>الإجمالي</th>
+                                        <th>المحصّل</th>
+                                        <th>المتبقي</th>
+                                        <th>إجراءات</th>
                                     </tr>
                                 </thead>
-                                <tbody id="salesBody" class="divide-y divide-slate-50"></tbody>
+                                <tbody id="salesBody"></tbody>
                             </table>
                         </div>
                     </div>
@@ -2212,132 +2248,341 @@
             </section>
 
             <!-- ===== ENTITY PROFILE ===== -->
+            <!-- ===== ENTITY PROFILE ===== -->
             <section id="page-entity-profile" class="page-section">
-                <div class="p-6 lg:p-10">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                        <div id="profileHeader">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1"            <div class="modal-overlay hidden" id="saleModal">
-                <div class="modal-card max-w-2xl w-full bg-white/90 backdrop-blur-2xl p-8 rounded-[2.5rem] shadow-2xl relative">
-                    <div class="flex justify-between items-center mb-8">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Revenue Generation</p>
-                            <h3 class="font-headline font-black text-2xl text-primary">New Sales Invoice</h3>
-                        </div>
-                        <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" onclick="App.closeModal('saleModal')">
-                            <span class="material-symbols-outlined">close</span>
+                <div class="p-6 lg:p-8">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <button onclick="history.back()" class="flex items-center gap-2 text-slate-400 hover:text-primary transition-colors text-sm font-bold">
+                            <span class="material-symbols-outlined text-lg">arrow_forward_ios</span>
+                            <span>رجوع</span>
                         </button>
+                        <div id="profileActions" class="flex items-center gap-3"></div>
                     </div>
-                    <form id="saleForm" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Date</label>
-                                <input id="saleDate" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="date">
+
+                    <!-- Profile Hero -->
+                    <div class="bg-white rounded-2xl p-6 mb-6 shadow-soft">
+                        <div class="flex items-start gap-5">
+                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#031636,#1a2b4c)">
+                                <span class="material-symbols-outlined text-white text-2xl">business</span>
                             </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Customer</label>
-                                <select id="saleCustomer" data-type="customers" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary"></select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Product</label>
-                                <select id="saleProduct" data-type="products" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary"></select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Sales Rep</label>
-                                <select id="saleRep" data-type="reps" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary"></select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Quantity</label>
-                                <input id="saleQty" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="number" step="0.01">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Unit Price</label>
-                                <input id="salePrice" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="number" step="0.01">
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">ملف الكيان</p>
+                                <h1 id="profileTitle" class="font-headline font-black text-3xl text-primary tracking-tight">—</h1>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="flex flex-wrap gap-6 p-4 bg-slate-50 rounded-2xl">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox" id="saleIsReturn" class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary/20">
-                                <span class="text-xs font-bold text-slate-600 uppercase tracking-widest">Return?</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox" id="saleStockImpact" checked class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary/20">
-                                <span class="text-xs font-bold text-slate-600 uppercase tracking-widest">Stock Impact</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox" id="saleVat" class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary/20">
-                                <span class="text-xs font-bold text-slate-600 uppercase tracking-widest">VAT (15%)</span>
-                            </label>
+                    <!-- Summary Cards (JS injects here) -->
+                    <div id="profileSummary" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+
+                    <!-- Transactions Table -->
+                    <div class="bg-white rounded-2xl shadow-soft overflow-hidden mb-6">
+                        <div class="px-6 py-4 border-b border-slate-50">
+                            <h3 class="font-headline font-bold text-primary text-base">سجل المعاملات</h3>
                         </div>
+                        <div id="profileTableWrapper" class="overflow-x-auto"></div>
+                    </div>
 
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Collected Amount</label>
-                            <input id="saleCollected" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="number" step="0.01">
-                        </div>
-
-                        <div class="p-6 bg-primary rounded-2xl text-white flex justify-between items-center shadow-premium">
-                            <span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Total Payable</span>
-                            <span id="saleTotal" class="text-2xl font-black font-headline">SAR 0.00</span>
-                        </div>
-
-                        <button type="submit" class="w-full py-4 rounded-2xl bg-primary text-white font-black shadow-premium hover:scale-[1.01] transition-transform">Authorize Sale</button>
-                    </form>
+                    <!-- Extra Info (rep warehouse etc - JS injects here) -->
+                    <div id="profileExtraInfo"></div>
                 </div>
-            </div><input
-                                        type="checkbox" id="saleVat">ضريبة 15%</label></div>
-                            <div class="col-span-2">
-                                <div class="col-span-2"><label
-                                        class="text-xs font-semibold text-slate-500 mb-1 block">ملاحظات</label><input
-                                        id="saleNotes" class="form-input" type="text"></div>
+            </section>
+
+            <!-- ===== SALE MODAL (screen 13) ===== -->
+            <div class="modal-overlay hidden" id="saleModal">
+                <div class="modal-card w-full bg-white relative" style="max-width:900px;max-height:92vh;overflow-y:auto;border-radius:1.5rem;padding:0">
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 sticky top-0 bg-white z-10" style="border-radius:1.5rem 1.5rem 0 0">
+                        <div class="flex items-center gap-3">
+                            <button class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" onclick="App.closeModal('saleModal')">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                            </button>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">دفتر الأستاذ</p>
+                                <h3 class="font-headline font-black text-xl text-primary">إنشاء مدخل مبيعات</h3>
                             </div>
-                            <div class="col-span-2 text-lg font-bold">الإجمالي: <span id="saleTotal">0.00</span></div>
                         </div>
-                        <button type="submit" class="btn-primary w-full mt-2">حفظ الفاتورة</button>
+                        <div class="flex items-center gap-3">
+                            <button type="button" class="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">حفظ كمسودة</button>
+                            <button type="button" onclick="document.getElementById('saleForm').requestSubmit()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-colors" style="background:#031636">إصدار الفاتورة</button>
+                        </div>
+                    </div>
+
+                    <form id="saleForm">
+                        <div class="grid grid-cols-3 gap-0" style="min-height:500px">
+                            <!-- Left: Summary -->
+                            <div class="col-span-1 border-r border-slate-100 p-6" style="background:#f8fafc">
+                                <div class="mb-5">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">رقم الفاتورة</p>
+                                    <p class="font-headline font-black text-primary text-lg">INV-2023-0892</p>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">تاريخ الإصدار</label>
+                                    <input id="saleDate" type="date" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary">
+                                </div>
+                                <div class="mb-6">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">تاريخ الاستحقاق</label>
+                                    <input id="saleDueDate" type="date" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary">
+                                </div>
+
+                                <!-- Summary Card -->
+                                <div class="rounded-2xl p-5 text-white mb-4" style="background:linear-gradient(135deg,#031636,#1a2b4c)">
+                                    <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-4">ملخص الحساب</p>
+                                    <div class="space-y-2 text-sm mb-4">
+                                        <div class="flex justify-between">
+                                            <span class="opacity-70">المجموع ل/م</span>
+                                            <span id="saleSummaryNet" class="font-bold font-body">0.00 ر.س</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="opacity-70">الخصومات</span>
+                                            <span class="font-bold font-body text-red-300">- 0.00 ر.س</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="opacity-70">ضريبة القيمة المضافة (15%)</span>
+                                            <span id="saleSummaryVat" class="font-bold font-body">0.00 ر.س</span>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-white/20 pt-3">
+                                        <p class="text-[10px] opacity-60 uppercase tracking-widest mb-1">الإجمالي المستحق</p>
+                                        <p id="saleTotal" class="text-2xl font-black font-body">0.00 ر.س</p>
+                                    </div>
+                                </div>
+
+                                <!-- Checkboxes -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-white transition-colors">
+                                        <input type="checkbox" id="saleIsReturn" class="w-4 h-4 rounded accent-primary">
+                                        <span class="text-xs font-bold text-slate-600">مرتجع</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-white transition-colors">
+                                        <input type="checkbox" id="saleStockImpact" checked class="w-4 h-4 rounded accent-primary">
+                                        <span class="text-xs font-bold text-slate-600">تأثير على المخزون</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-white transition-colors">
+                                        <input type="checkbox" id="saleVat" class="w-4 h-4 rounded accent-primary">
+                                        <span class="text-xs font-bold text-slate-600">ضريبة القيمة المضافة 15%</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Right: Main Form -->
+                            <div class="col-span-2 p-7 space-y-6">
+                                <!-- Customer Details -->
+                                <div>
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:#031636">
+                                            <span class="material-symbols-outlined text-white" style="font-size:14px">person</span>
+                                        </div>
+                                        <h4 class="font-headline font-bold text-primary">تفاصيل العميل</h4>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">اسم العميل</label>
+                                            <select id="saleCustomer" data-type="customers" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary"></select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">الرقم الضريبي</label>
+                                            <input id="saleTaxNum" type="text" placeholder="300012345600003" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                        <div class="col-span-2">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">عنوان الشحن</label>
+                                            <input id="saleAddress" type="text" placeholder="أدخل تفاصيل العنوان بالكامل" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Invoice Lines -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:#031636">
+                                                <span class="material-symbols-outlined text-white" style="font-size:14px">receipt_long</span>
+                                            </div>
+                                            <h4 class="font-headline font-bold text-primary">بنود الفاتورة</h4>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">الصنف</label>
+                                            <select id="saleProduct" data-type="products" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary"></select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">المندوب</label>
+                                            <select id="saleRep" data-type="reps" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary"></select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">الكمية</label>
+                                            <input id="saleQty" type="number" step="0.01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">سعر الوحدة</label>
+                                            <input id="salePrice" type="number" step="0.01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">المحصّل</label>
+                                            <input id="saleCollected" type="number" step="0.01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Notes -->
+                                <div>
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100">
+                                            <span class="material-symbols-outlined text-slate-500" style="font-size:14px">note</span>
+                                        </div>
+                                        <h4 class="font-headline font-bold text-primary">ملاحظات إضافية</h4>
+                                    </div>
+                                    <textarea id="saleNotes" rows="3" placeholder="أضف أي ملاحظات إضافية هنا..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-primary resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
 
 
             <!-- ===== MODALS ===== -->
+            <!-- PURCHASE MODAL (screen 4) -->
             <div class="modal-overlay hidden" id="purchaseModal">
-                <div class="modal-card max-w-2xl w-full bg-white/90 backdrop-blur-2xl p-8 rounded-[2.5rem] shadow-2xl relative">
-                    <div class="flex justify-between items-center mb-8">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Stock Procurement</p>
-                            <h3 class="font-headline font-black text-2xl text-primary">New Purchase Bill</h3>
+                <div class="modal-card w-full bg-white relative" style="max-width:900px;max-height:92vh;overflow-y:auto;border-radius:1.5rem;padding:0">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 sticky top-0 bg-white z-10" style="border-radius:1.5rem 1.5rem 0 0">
+                        <div class="flex items-center gap-3">
+                            <button class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" onclick="App.closeModal('purchaseModal')">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                            </button>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">المشتريات</p>
+                                <h3 class="font-headline font-black text-xl text-primary">إنشاء فاتورة شراء جديدة</h3>
+                            </div>
                         </div>
-                        <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" onclick="App.closeModal('purchaseModal')">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
+                        <div class="flex items-center gap-3">
+                            <button type="button" class="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">حفظ كمسودة</button>
+                            <button type="button" onclick="document.getElementById('purchaseForm').requestSubmit()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-colors" style="background:#031636">اعتماد الفاتورة</button>
+                        </div>
                     </div>
+
                     <form id="purchaseForm">
-                        <div class="grid grid-cols-2 gap-6 mb-8">
-                            <div class="col-span-2 md:col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Date</label>
-                                <input id="purchDate" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="date">
+                        <div class="grid grid-cols-3 gap-0">
+                            <!-- Left: Summary -->
+                            <div class="col-span-1 border-r border-slate-100 p-6" style="background:#f8fafc">
+                                <h4 class="font-headline font-bold text-primary text-sm mb-4">ملخص الفاتورة</h4>
+                                <div class="space-y-3 mb-5 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400 font-bold text-xs">المجموع الفرعي</span>
+                                        <span id="purchSummaryNet" class="font-bold text-primary font-body">0.00 ر.س</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400 font-bold text-xs">إجمالي الضريبة (15%)</span>
+                                        <span id="purchSummaryVat" class="font-bold text-primary font-body">0.00 ر.س</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400 font-bold text-xs">خصم</span>
+                                        <span class="font-bold text-primary font-body">0.00- ر.س</span>
+                                    </div>
+                                </div>
+                                <div class="rounded-2xl p-4 text-primary mb-4" style="background:#e8f0fe">
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">الإجمالي الكلي</p>
+                                    <p id="purchTotal" class="text-2xl font-black font-body" style="color:#031636">0.00</p>
+                                    <p class="text-xs font-bold text-slate-400 mt-1">ريال سعودي</p>
+                                </div>
+                                <div class="rounded-xl p-3 text-xs text-slate-500 flex items-start gap-2" style="background:#fef9c3">
+                                    <span class="material-symbols-outlined text-amber-600" style="font-size:15px;margin-top:1px">info</span>
+                                    <p>يرجى التأكد من مطابقة الفاتورة مع النسخة الورقية من المورد قبل الاعتماد.</p>
+                                </div>
                             </div>
-                            <div class="col-span-2 md:col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Supplier</label>
-                                <select id="purchSupplier" data-type="suppliers" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary"></select>
-                            </div>
-                            <div class="col-span-2 md:col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Product</label>
-                                <select id="purchProduct" data-type="products" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary"></select>
-                            </div>
-                            <div class="col-span-2 md:col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Stock Center</label>
-                                <select id="purchRep" data-type="reps" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary"></select>
-                            </div>
-                            <div class="col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Quantity</label>
-                                <input id="purchQty" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="number" step="0.01">
-                            </div>
-                            <div class="col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Unit Cost</label>
-                                <input id="purchPrice" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary" type="number" step="0.01">
+
+                            <!-- Right: Form -->
+                            <div class="col-span-2 p-7 space-y-6">
+                                <!-- Supplier Info -->
+                                <div>
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:#031636">
+                                            <span class="material-symbols-outlined text-white" style="font-size:14px">storefront</span>
+                                        </div>
+                                        <h4 class="font-headline font-bold text-primary">بيانات المورد</h4>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">المورد</label>
+                                            <select id="purchSupplier" data-type="suppliers" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary"></select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">تاريخ الفاتورة</label>
+                                            <input id="purchDate" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                        <div class="col-span-2">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">رقم مرجع المورد</label>
+                                            <input id="purchRef" type="text" placeholder="INV-2023-..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-primary">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item Line -->
+                                <div>
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:#031636">
+                                            <span class="material-symbols-outlined text-white" style="font-size:14px">inventory_2</span>
+                                        </div>
+                                        <h4 class="font-headline font-bold text-primary">الأصناف</h4>
+                                    </div>
+                                    <div class="overflow-x-auto rounded-xl border border-slate-100 mb-3">
+                                        <table class="w-full text-right text-sm">
+                                            <thead class="bg-slate-50">
+                                                <tr>
+                                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الصنف</th>
+                                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الكمية</th>
+                                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">سعر الوحدة</th>
+                                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الضريبة 15%</th>
+                                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">الإجمالي</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="px-4 py-3"><select id="purchProduct" data-type="products" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-primary focus:outline-none focus:border-primary"></select></td>
+                                                    <td class="px-4 py-3"><input id="purchQty" type="number" step="0.01" value="1" class="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-primary text-center focus:outline-none"></td>
+                                                    <td class="px-4 py-3"><input id="purchPrice" type="number" step="0.01" value="0" class="w-24 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-primary focus:outline-none"></td>
+                                                    <td class="px-4 py-3"><span class="text-xs font-bold text-slate-500">0.00%</span></td>
+                                                    <td class="px-4 py-3"><span class="text-xs font-bold text-primary">0.00</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">مستودع المندوب</label>
+                                            <select id="purchRep" data-type="reps" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-primary focus:outline-none focus:border-primary"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Notes & Attachments -->
+                                <div>
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100">
+                                            <span class="material-symbols-outlined text-slate-500" style="font-size:14px">attach_file</span>
+                                        </div>
+                                        <h4 class="font-headline font-bold text-primary">المرفقات والملاحظات</h4>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">ملاحظات الفاتورة</label>
+                                            <textarea id="purchNotes" rows="3" placeholder="أضف أي ملاحظات إضافية هنا..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-primary resize-none"></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">نسخة الفاتورة</label>
+                                            <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center h-24 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
+                                                <span class="material-symbols-outlined text-slate-300 text-2xl mb-1">cloud_upload</span>
+                                                <p class="text-xs text-slate-400 font-bold">اسحب وأفلت الملف هنا</p>
+                                                <p class="text-[10px] text-slate-300">(PDF, JPG, PNG)</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <button type="submit" class="w-full py-4 rounded-2xl bg-primary text-white font-black shadow-premium hover:scale-[1.01] transition-transform">Verify & Register Purchase</button>
                     </form>
                 </div>
             </div>

@@ -786,6 +786,16 @@ const App = (() => {
     const tbody = document.getElementById('salesBody');
     if (!tbody) return;
 
+    // Populate stat cards
+    const totalSales = sales.reduce((s, r) => s + (r.total || 0), 0);
+    const totalCollected = sales.reduce((s, r) => s + (r.collected || 0), 0);
+    const totalRemain = sales.reduce((s, r) => s + (r.balance || 0), 0);
+    const el = id => document.getElementById(id);
+    if (el('saleTotalStat')) el('saleTotalStat').textContent = ExcelEngine.formatCurrency(totalSales);
+    if (el('saleCollectedStat')) el('saleCollectedStat').textContent = ExcelEngine.formatCurrency(totalCollected);
+    if (el('saleRemainStat')) el('saleRemainStat').textContent = ExcelEngine.formatCurrency(totalRemain);
+    if (el('saleCountStat')) el('saleCountStat').textContent = sales.length;
+
     if (sales.length === 0) {
       tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state"><i class="fas fa-file-invoice"></i><h3>لا توجد مبيعات</h3><p>ابدأ بإضافة فاتورة بيع جديدة</p></div></td></tr>`;
       return;
