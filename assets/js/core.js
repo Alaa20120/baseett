@@ -163,6 +163,20 @@ const App = (() => {
       });
     });
 
+    // Handle Nav Group clicks (collapsible sections)
+    document.querySelectorAll('.nav-group').forEach(group => {
+        const header = group.querySelector('.nav-item:not([data-page])');
+        if (header) {
+            header.addEventListener('click', () => {
+                // Close other groups
+                document.querySelectorAll('.nav-group').forEach(g => {
+                    if (g !== group) g.classList.remove('open');
+                });
+                group.classList.toggle('open');
+            });
+        }
+    });
+
     // Mobile menu toggle
     const mobileBtn = document.getElementById('mobileMenuBtn');
     if (mobileBtn) {
@@ -178,7 +192,12 @@ const App = (() => {
     // Update active nav
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.querySelector(`.nav-item[data-page="${page}"]`);
-    if (activeNav) activeNav.classList.add('active');
+    if (activeNav) {
+        activeNav.classList.add('active');
+        // Ensure parent group is open
+        const parentGroup = activeNav.closest('.nav-group');
+        if (parentGroup) parentGroup.classList.add('open');
+    }
 
     // Show active page
     document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -487,36 +506,67 @@ const App = (() => {
   function renderDashboard() {
     const stats = ExcelEngine.getStats();
 
-    // Update stat cards
-    setTextContent('statTotalSales', ExcelEngine.formatCurrency(stats.totalSales));
-    setTextContent('statTotalPurchases', ExcelEngine.formatCurrency(stats.totalPurchases));
-    setTextContent('statProfit', ExcelEngine.formatCurrency(stats.realProfit));
-    setTextContent('statTotalDue', ExcelEngine.formatCurrency(stats.totalDue));
-
-    // New financial stat cards
-    setTextContent('statCashInBox', ExcelEngine.formatCurrency(stats.cashInBox));
-    setTextContent('statRepCustody', ExcelEngine.formatCurrency(stats.totalRepCustody));
-
-    // Detailed sub-info
-    const salesCountEl = document.getElementById('statSalesCount');
-    if (salesCountEl) salesCountEl.innerHTML = `<i class="fas fa-arrow-up"></i> ${stats.salesCount} فاتورة`;
-
-    const custCountEl = document.getElementById('statCustomersCount');
-    if (custCountEl) custCountEl.innerHTML = `${stats.customersCount} عميل`;
+    // Update stat cards with Currency Formatting
+    setTextContent('statCashInBox', 'SAR ' + ExcelEngine.formatCurrency(stats.cashInBox));
+    setTextContent('statTotalDue', 'SAR ' + ExcelEngine.formatCurrency(stats.totalDue));
+    setTextContent('statTotalPurchases', 'SAR ' + ExcelEngine.formatCurrency(stats.totalPurchases));
+    setTextContent('statTotalSales', 'SAR ' + ExcelEngine.formatCurrency(stats.totalSales));
 
     // Update sales badge in sidebar
     const salesBadge = document.getElementById('salesBadge');
-    if (salesBadge) salesBadge.textContent = stats.salesCount;
+    if (salesBadge) {
+        salesBadge.textContent = stats.salesCount;
+        salesBadge.style.display = stats.salesCount > 0 ? 'inline-block' : 'none';
+    }
 
     // Charts
     renderSalesChart(stats.salesByDate);
-    renderTopProductsChart(stats.topProducts);
+    
+    // Recent Ledger Entries
+    renderRecentLedgerEntries();
+  }
 
-    // Top debtors table
-    renderTopDebtorsTable(stats.topDebtors);
+  function renderRecentLedgerEntries() {
+    const listEl = document.getElementById('recentEntriesList');
+    if (!listEl) return;
 
-    // Low stock alerts
-    renderLowStockAlerts(stats.lowStock);
+    // Combine recent sales and purchases for the ledger view
+    const sales = (ExcelEngine.getData('sales') || []).slice(-3).reverse();
+    const purchases = (ExcelEngine.getData('purchases') || []).slice(-2).reverse();
+    
+    const entries = [
+        ...sales.map(s => ({ type: 'sale', title: `Invoice #${s.invoiceId || 'INV-001'}`, subtitle: s.customer, amount: s.total, date: s.date })),
+        ...purchases.map(p => ({ type: 'purchase', title: `Purchase #${p.id || 'PUR-001'}`, subtitle: p.supplier, amount: -p.total, date: p.date }))
+    ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+    if (entries.length === 0) {
+        listEl.innerHTML = `
+            <div class="flex items-center justify-center h-48 text-slate-300 flex-col gap-2">
+                <span class="material-symbols-outlined text-4xl">list_alt</span>
+                <p class="text-xs font-bold uppercase tracking-widest">No recent activities</p>
+            </div>`;
+        return;
+    }
+
+    listEl.innerHTML = entries.map(entry => `
+        <div class="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-3 rounded-2xl transition-all hover:scale-[1.01]">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl ${entry.amount > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'} flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-xl">${entry.amount > 0 ? 'payments' : 'shopping_cart'}</span>
+                </div>
+                <div>
+                    <p class="text-sm font-black text-primary font-headline">${entry.title}</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${entry.subtitle}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-sm font-black font-headline ${entry.amount > 0 ? 'text-emerald-600' : 'text-primary'}">
+                    ${entry.amount > 0 ? '+' : ''}${ExcelEngine.formatCurrency(Math.abs(entry.amount))}
+                </p>
+                <p class="text-[9px] font-bold text-slate-300 uppercase">${entry.date}</p>
+            </div>
+        </div>
+    `).join('');
   }
 
   function renderSalesChart(salesByDate) {
@@ -529,19 +579,15 @@ const App = (() => {
     const data = labels.map(d => salesByDate[d]);
 
     chartInstances.salesChart = new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'المبيعات',
+          label: 'Revenue',
           data: data,
-          borderColor: '#1a73e8',
-          backgroundColor: 'rgba(26, 115, 232, 0.1)',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 2,
-          pointRadius: 4,
-          pointBackgroundColor: '#1a73e8'
+          backgroundColor: '#031636',
+          borderRadius: 8,
+          barThickness: 12
         }]
       },
       options: {
@@ -550,23 +596,23 @@ const App = (() => {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1a2035',
-            titleColor: '#f1f5f9',
-            bodyColor: '#94a3b8',
-            borderColor: 'rgba(255,255,255,0.1)',
-            borderWidth: 1,
-            rtl: true,
-            textDirection: 'rtl'
+            backgroundColor: '#031636',
+            titleColor: '#fff',
+            bodyColor: '#cbd5e1',
+            padding: 12,
+            cornerRadius: 12,
+            displayColors: false,
+            font: { family: 'Inter' }
           }
         },
         scales: {
           x: {
-            grid: { color: 'rgba(255,255,255,0.05)' },
-            ticks: { color: '#64748b', font: { family: 'Inter' } }
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { family: 'Inter', size: 10, weight: '600' } }
           },
           y: {
-            grid: { color: 'rgba(255,255,255,0.05)' },
-            ticks: { color: '#64748b', font: { family: 'Inter' } }
+            grid: { color: '#f1f5f9', drawBorder: false },
+            ticks: { color: '#94a3b8', font: { family: 'Inter', size: 10, weight: '600' } }
           }
         }
       }

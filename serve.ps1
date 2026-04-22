@@ -2,7 +2,7 @@ $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:8080/")
 $listener.Start()
 Write-Host "Server running on http://localhost:8080"
-$root = "C:\Users\ahmed\.gemini\antigravity\scratch"
+$root = $PSScriptRoot
 
 while ($listener.IsListening) {
     $ctx = $listener.GetContext()
