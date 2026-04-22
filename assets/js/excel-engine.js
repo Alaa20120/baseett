@@ -1316,6 +1316,13 @@ const ExcelEngine = (() => {
       salesByDate[s.date] += s.total || 0;
     });
 
+    // Purchases by date
+    const purchasesByDate = {};
+    workbookData.purchases.forEach(p => {
+      if (!purchasesByDate[p.date]) purchasesByDate[p.date] = 0;
+      purchasesByDate[p.date] += p.total || 0;
+    });
+
     // Rep performance
     const repPerformance = {};
     workbookData.sales.forEach(s => {
@@ -1379,6 +1386,7 @@ const ExcelEngine = (() => {
       lowStock,
       topDebtors,
       salesByDate,
+      purchasesByDate,
       repPerformance
     };
   }

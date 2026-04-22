@@ -35,26 +35,9 @@ const App = (() => {
 
   // === Auth logic ===
   function setupAuth() {
-    const loginOverlay = document.getElementById('loginOverlay');
     const loginForm = document.getElementById('loginForm');
 
-    // Check session
-    const storedUser = sessionStorage.getItem('currentUser');
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        if (ExcelEngine.login(user.name, user.password || '')) {
-          handleAuthSuccess();
-        } else {
-          document.body.classList.add('logged-out');
-        }
-      } catch (e) {
-        document.body.classList.add('logged-out');
-      }
-    } else {
-      document.body.classList.add('logged-out');
-    }
-
+    // Set up login form listener (always needed, even during first-time setup)
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -70,7 +53,6 @@ const App = (() => {
           const result = ExcelEngine.login(username, pass);
           if (result === true) {
             handleAuthSuccess();
-            // Critical check for old invoices security
             const securedCount = ExcelEngine.secureExistingInvoices();
             if (securedCount > 0) {
               showToast(`تم اكتشاف وتأمين ${securedCount} فاتورة غير مشفرة بنجاح`, 'info');
@@ -94,6 +76,86 @@ const App = (() => {
         ExcelEngine.logout();
         sessionStorage.removeItem('currentUser');
         window.location.reload();
+      });
+    }
+
+    // First-time setup: show workspace init overlay if not yet deployed
+    if (!localStorage.getItem('sovLedger_workspace')) {
+      showInitWorkspace();
+      return;
+    }
+
+    // Check existing session
+    const storedUser = sessionStorage.getItem('currentUser');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        if (ExcelEngine.login(user.name, user.password || '')) {
+          handleAuthSuccess();
+        } else {
+          document.body.classList.add('logged-out');
+        }
+      } catch (e) {
+        document.body.classList.add('logged-out');
+      }
+    } else {
+      document.body.classList.add('logged-out');
+    }
+  }
+
+  function showInitWorkspace() {
+    const overlay = document.getElementById('initWorkspaceOverlay');
+    if (!overlay) return;
+    overlay.style.display = 'block';
+
+    const form = document.getElementById('initWorkspaceForm');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const companyName = document.getElementById('wsCompanyName').value.trim();
+      const entityType = document.getElementById('wsEntityType').value;
+      const adminEmail = document.getElementById('wsAdminEmail').value.trim();
+      const phone = document.getElementById('wsPhone').value.trim();
+      const masterPassword = document.getElementById('wsMasterPassword').value.trim();
+
+      if (!companyName || !masterPassword) {
+        showToast('يرجى إدخال اسم المؤسسة وكلمة المرور', 'error');
+        return;
+      }
+
+      const deployBtn = form.querySelector('.deploy-btn');
+      const originalHTML = deployBtn.innerHTML;
+      deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deploying...';
+      deployBtn.disabled = true;
+
+      setTimeout(() => {
+        // Persist workspace config
+        localStorage.setItem('sovLedger_workspace', JSON.stringify({
+          companyName, entityType, adminEmail, phone,
+          deployedAt: new Date().toISOString()
+        }));
+
+        // Update admin password in ExcelEngine
+        const staff = ExcelEngine.getStaff();
+        const admin = staff.find(s => s.name === 'admin');
+        if (admin) admin.password = masterPassword;
+        ExcelEngine.saveToLocalStorage();
+
+        overlay.style.display = 'none';
+        document.body.classList.add('logged-out');
+        deployBtn.innerHTML = originalHTML;
+        deployBtn.disabled = false;
+        showToast(`تم إعداد مؤسسة "${companyName}" بنجاح. يمكنك تسجيل الدخول الآن.`, 'success');
+      }, 1200);
+    });
+
+    const accessLink = document.getElementById('wsAccessDashboard');
+    if (accessLink) {
+      accessLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        overlay.style.display = 'none';
+        document.body.classList.add('logged-out');
       });
     }
   }
@@ -520,7 +582,7 @@ const App = (() => {
     }
 
     // Charts
-    renderSalesChart(stats.salesByDate);
+    renderSalesChart(stats.salesByDate, stats.purchasesByDate);
     
     // Recent Ledger Entries
     renderRecentLedgerEntries();
@@ -569,39 +631,61 @@ const App = (() => {
     `).join('');
   }
 
-  function renderSalesChart(salesByDate) {
+  function renderSalesChart(salesByDate, purchasesByDate = {}) {
     const ctx = document.getElementById('salesChart');
     if (!ctx) return;
 
     if (chartInstances.salesChart) chartInstances.salesChart.destroy();
 
-    const labels = Object.keys(salesByDate).slice(-15);
-    const data = labels.map(d => salesByDate[d]);
+    const allDates = [...new Set([...Object.keys(salesByDate || {}), ...Object.keys(purchasesByDate)])].sort().slice(-12);
+    const revenueData = allDates.map(d => (salesByDate || {})[d] || 0);
+    const expensesData = allDates.map(d => purchasesByDate[d] || 0);
 
     chartInstances.salesChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
-        datasets: [{
-          label: 'Revenue',
-          data: data,
-          backgroundColor: '#031636',
-          borderRadius: 8,
-          barThickness: 12
-        }]
+        labels: allDates,
+        datasets: [
+          {
+            label: 'الإيرادات',
+            data: revenueData,
+            backgroundColor: '#031636',
+            borderRadius: 8,
+            barThickness: 10
+          },
+          {
+            label: 'المصروفات',
+            data: expensesData,
+            backgroundColor: '#94a3b8',
+            borderRadius: 8,
+            barThickness: 10
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          legend: {
+            display: true,
+            position: 'top',
+            align: 'end',
+            labels: {
+              boxWidth: 8,
+              boxHeight: 8,
+              usePointStyle: true,
+              pointStyle: 'rectRounded',
+              color: '#94a3b8',
+              font: { family: 'Cairo', size: 11, weight: '600' }
+            }
+          },
           tooltip: {
             backgroundColor: '#031636',
             titleColor: '#fff',
             bodyColor: '#cbd5e1',
             padding: 12,
             cornerRadius: 12,
-            displayColors: false,
+            displayColors: true,
             font: { family: 'Inter' }
           }
         },
