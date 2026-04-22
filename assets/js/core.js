@@ -611,22 +611,19 @@ const App = (() => {
     }
 
     listEl.innerHTML = entries.map(entry => `
-        <div class="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-3 rounded-2xl transition-all hover:scale-[1.01]">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl ${entry.amount > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'} flex items-center justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-xl">${entry.amount > 0 ? 'payments' : 'shopping_cart'}</span>
+        <div class="flex items-center justify-between cursor-pointer hover:bg-slate-50 px-3 py-2.5 rounded-xl transition-colors">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${entry.amount > 0 ? 'bg-emerald-50' : 'bg-slate-100'}">
+                    <span class="material-symbols-outlined" style="font-size:1rem;color:${entry.amount > 0 ? '#059669' : '#64748b'}">${entry.amount > 0 ? 'payments' : 'shopping_cart'}</span>
                 </div>
                 <div>
-                    <p class="text-sm font-black text-primary font-headline">${entry.title}</p>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${entry.subtitle}</p>
+                    <p class="text-xs font-bold text-primary font-headline leading-tight">${entry.title}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5" style="font-family:'Inter',sans-serif">${entry.date}</p>
                 </div>
             </div>
-            <div class="text-right">
-                <p class="text-sm font-black font-headline ${entry.amount > 0 ? 'text-emerald-600' : 'text-primary'}">
-                    ${entry.amount > 0 ? '+' : ''}${ExcelEngine.formatCurrency(Math.abs(entry.amount))}
-                </p>
-                <p class="text-[9px] font-bold text-slate-300 uppercase">${entry.date}</p>
-            </div>
+            <p class="text-xs font-black font-headline ${entry.amount > 0 ? 'text-emerald-600' : 'text-slate-700'}">
+                ${entry.amount > 0 ? '+' : ''}${ExcelEngine.formatCurrency(Math.abs(entry.amount))}
+            </p>
         </div>
     `).join('');
   }
